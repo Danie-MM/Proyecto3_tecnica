@@ -1,0 +1,113 @@
+<main class="usuarios">
+  <header class="usuarios__encabezado">
+    <div>
+      <p class="usuarios__etiqueta">
+        Administración
+      </p>
+
+      <h1>
+        Usuarios registrados
+      </h1>
+
+      <p>
+        Consulta los usuarios registrados
+        y sus roles.
+      </p>
+    </div>
+
+    <a
+      class="usuarios__volver"
+      routerLink="/dashboard"
+    >
+      Volver al dashboard
+    </a>
+  </header>
+
+  @if (mensajeError()) {
+    <p
+      class="usuarios__error"
+      role="alert"
+    >
+      {{ mensajeError() }}
+    </p>
+  }
+
+  @if (cargando()) {
+    <p class="usuarios__estado">
+      Cargando usuarios...
+    </p>
+  } @else if (
+    usuarios().length === 0 &&
+    !mensajeError()
+  ) {
+    <p class="usuarios__estado">
+      No hay usuarios registrados.
+    </p>
+  } @else {
+    <section
+      class="usuarios__tabla-contenedor"
+      aria-label="Usuarios registrados"
+    >
+      <table class="usuarios__tabla">
+        <thead>
+          <tr>
+            <th scope="col">
+              ID
+            </th>
+
+            <th scope="col">
+              Usuario
+            </th>
+
+            <th scope="col">
+              Rol
+            </th>
+
+            <th scope="col">
+              Estado
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (
+            usuario of usuarios();
+            track usuario.id
+          ) {
+            <tr>
+              <td>
+                {{ usuario.id }}
+              </td>
+
+              <td>
+                {{ usuario.username }}
+              </td>
+
+              <td>
+                {{ usuario.rol }}
+              </td>
+
+              <td>
+                <span
+                  class="estado"
+                  [class.estado--activo]="
+                    usuario.activo
+                  "
+                  [class.estado--inactivo]="
+                    !usuario.activo
+                  "
+                >
+                  {{
+                    usuario.activo
+                      ? 'Activo'
+                      : 'Inactivo'
+                  }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+  }
+</main>

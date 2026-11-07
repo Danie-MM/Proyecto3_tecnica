@@ -1,0 +1,75 @@
+
+<main class="pagina">
+  <header class="pagina__header">
+    <div>
+      <p class="etiqueta">Administración</p>
+      <h1>Categorías</h1>
+      <span>Consulta las categorías disponibles.</span>
+    </div>
+
+    <div class="acciones">
+      <a class="boton boton--secundario" routerLink="/dashboard">
+        Volver al dashboard
+      </a>
+
+      <a class="boton boton--primario" routerLink="/categorias/registrar">
+        Registrar categoría
+      </a>
+    </div>
+  </header>
+
+  @if (mensajeError()) {
+    <div class="alerta">
+      {{ mensajeError() }}
+    </div>
+  }
+
+  <section class="contenido">
+    @if (cargando()) {
+      <p>Cargando categorías...</p>
+    } @else if (categorias().length === 0) {
+      <p>No hay categorías registradas.</p>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (categoria of categorias(); track categoria.id) {
+              <tr>
+                <td>{{ categoria.id }}</td>
+                <td>{{ categoria.nombre }}</td>
+                <td>{{ categoria.descripcion }}</td>
+                <td>
+                  <div class="acciones-tabla">
+                    <a
+                      class="boton boton--editar"
+                      [routerLink]="['/categorias/editar', categoria.id]"
+                    >
+                      Editar
+                    </a>
+
+                    <button
+                      type="button"
+                      class="boton boton--eliminar"
+                      (click)="eliminarCategoria(categoria)"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

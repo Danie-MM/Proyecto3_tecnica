@@ -1,0 +1,130 @@
+<main class="pagina">
+  <header class="pagina__header">
+    <div>
+      <p class="etiqueta">
+        Administración
+      </p>
+
+      <h1>Productos</h1>
+
+      <span>
+        Consulta los productos registrados.
+      </span>
+    </div>
+
+    <div class="acciones">
+      <a
+        class="boton boton--secundario"
+        routerLink="/dashboard"
+      >
+        Volver al dashboard
+      </a>
+
+      <a
+        class="boton boton--primario"
+        routerLink="/productos/registrar"
+      >
+        Registrar producto
+      </a>
+    </div>
+  </header>
+
+  @if (mensajeError()) {
+    <div
+      class="alerta"
+      role="alert"
+    >
+      {{ mensajeError() }}
+    </div>
+  }
+
+  <section class="contenido">
+    @if (cargando()) {
+      <p>Cargando productos...</p>
+    } @else if (productos().length === 0) {
+      <p>
+        No hay productos registrados.
+      </p>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (
+              producto of productos();
+              track producto.id
+            ) {
+              <tr>
+                <td>
+                  {{ producto.id }}
+                </td>
+
+                <td>
+                  {{ producto.nombre }}
+                </td>
+
+                <td>
+                  {{ producto.descripcion }}
+                </td>
+
+                <td>
+                  {{
+                    producto.categoriaNombre ??
+                      producto.categoriaId
+                  }}
+                </td>
+
+                <td>
+                  {{
+                    producto.precio
+                      | currency:
+                        'CRC':
+                        'symbol-narrow':
+                        '1.2-2'
+                  }}
+                </td>
+
+                <td>
+                  {{ producto.cantidadStock }}
+                </td>
+
+                <td>
+                  <div class="acciones-tabla">
+                    <a
+                      class="boton boton--editar"
+                      [routerLink]="[
+                        '/productos/editar',
+                        producto.id
+                      ]"
+                    >
+                      Editar
+                    </a>
+
+                    <button
+                      type="button"
+                      class="boton boton--eliminar"
+                      (click)="eliminarProducto(producto)"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</main>

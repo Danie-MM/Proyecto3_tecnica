@@ -1,0 +1,235 @@
+<main class="dashboard">
+
+  <header class="dashboard__header">
+
+    <div class="dashboard__usuario">
+
+      <p class="dashboard__etiqueta">
+        Panel principal
+      </p>
+
+      <h1>
+        Hola,
+        {{ authService.usuarioActual()?.username }}
+      </h1>
+
+      <span class="dashboard__rol">
+        Rol:
+        {{ authService.usuarioActual()?.role }}
+      </span>
+
+      <p>
+        Validación SUPER-ADMIN:
+        {{
+          authService.hasRole(
+            'SUPER-ADMIN-ROLE'
+          )
+        }}
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="dashboard__logout"
+      (click)="cerrarSesion()"
+    >
+
+      <span class="material-symbols-outlined">
+        logout
+      </span>
+
+      Cerrar sesión
+
+    </button>
+
+  </header>
+
+  <section class="dashboard__contenido">
+
+    <header class="dashboard__seccion-header">
+
+      <div>
+
+        <p>
+          Administración
+        </p>
+
+        <h2>
+          ¿Qué deseas hacer?
+        </h2>
+
+      </div>
+
+    </header>
+
+    <div class="dashboard__opciones">
+
+      <a
+        class="dashboard__tarjeta"
+        routerLink="/categorias"
+      >
+
+        <span
+          class="material-symbols-outlined dashboard__icono"
+        >
+          category
+        </span>
+
+        <div>
+
+          <strong>
+            Categorías
+          </strong>
+
+          <p>
+            Consultar las categorías disponibles.
+          </p>
+
+        </div>
+
+        <span
+          class="material-symbols-outlined dashboard__flecha"
+        >
+          arrow_forward
+        </span>
+
+      </a>
+
+      <a
+        class="dashboard__tarjeta"
+        routerLink="/productos"
+      >
+
+        <span
+          class="material-symbols-outlined dashboard__icono"
+        >
+          inventory_2
+        </span>
+
+        <div>
+
+          <strong>
+            Productos
+          </strong>
+
+          <p>
+            Consultar los productos registrados.
+          </p>
+
+        </div>
+
+        <span
+          class="material-symbols-outlined dashboard__flecha"
+        >
+          arrow_forward
+        </span>
+
+      </a>
+
+      @if (
+        authService.hasRole(
+          'SUPER-ADMIN-ROLE'
+        )
+      ) {
+
+        <a
+          class="dashboard__tarjeta"
+          routerLink="/categorias/registrar"
+        >
+
+          <span
+            class="material-symbols-outlined dashboard__icono"
+          >
+            add_circle
+          </span>
+
+          <div>
+
+            <strong>
+              Registrar categoría
+            </strong>
+
+            <p>
+              Crear una nueva categoría.
+            </p>
+
+          </div>
+
+          <span
+            class="material-symbols-outlined dashboard__flecha"
+          >
+            arrow_forward
+          </span>
+
+        </a>
+
+        <a
+          class="dashboard__tarjeta"
+          routerLink="/productos/registrar"
+        >
+
+          <span
+            class="material-symbols-outlined dashboard__icono"
+          >
+            add_box
+          </span>
+
+          <div>
+
+            <strong>
+              Registrar producto
+            </strong>
+
+            <p>
+              Crear un nuevo producto.
+            </p>
+
+          </div>
+
+          <span
+            class="material-symbols-outlined dashboard__flecha"
+          >
+            arrow_forward
+          </span>
+
+        </a>
+
+        <a
+          class="dashboard__tarjeta"
+          routerLink="/usuarios"
+        >
+
+          <span
+            class="material-symbols-outlined dashboard__icono"
+          >
+            manage_accounts
+          </span>
+
+          <div>
+
+            <strong>
+              Usuarios
+            </strong>
+
+            <p>
+              Consultar los usuarios registrados.
+            </p>
+
+          </div>
+
+          <span
+            class="material-symbols-outlined dashboard__flecha"
+          >
+            arrow_forward
+          </span>
+
+        </a>
+
+      }
+
+    </div>
+
+  </section>
+
+</main>
