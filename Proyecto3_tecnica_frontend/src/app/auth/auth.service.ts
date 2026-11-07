@@ -48,17 +48,14 @@ export class AuthService {
   );
 
   iniciarSesion(request: LoginRequest): Observable<JwtResponse> {
-    return this.http.post<JwtResponse>(
-      `${this.baseUrl}/login`,
-      request
-    ).pipe(
+    return this.http.post<JwtResponse>(`${this.baseUrl}/login`, request).pipe(
       tap(response => {
         const payload = this.obtenerPayload(response.token);
 
         const usuario: UsuarioActual = {
           username: response.username || payload?.username || payload?.sub || '',
           role: response.role || payload?.rol || payload?.role ||
-            payload?.roles?.[0] || payload?.authorities?.[0] || ''
+                payload?.roles?.[0] || payload?.authorities?.[0] || ''
         };
 
         if (typeof localStorage !== 'undefined') {
@@ -67,17 +64,12 @@ export class AuthService {
         }
 
         this.usuarioActual.set(usuario);
-
-        console.log('Usuario autenticado:', usuario);
       })
     );
   }
 
   registrarUsuario(request: RegistroRequest): Observable<UsuarioResponse> {
-    return this.http.post<UsuarioResponse>(
-      `${this.baseUrl}/registro`,
-      request
-    );
+    return this.http.post<UsuarioResponse>(`${this.baseUrl}/registro`, request);
   }
 
   obtenerToken(): string | null {
@@ -110,13 +102,8 @@ export class AuthService {
   }
 
   obtenerRoles(): string[] {
-    const usuario = this.usuarioActual();
-
-    if (!usuario?.role) {
-      return [];
-    }
-
-    return [usuario.role];
+    const role = this.usuarioActual()?.role;
+    return role ? [role] : [];
   }
 
   hasRole(roleEsperado: string): boolean {
@@ -155,13 +142,7 @@ export class AuthService {
 
     const payload = this.obtenerPayload(token);
 
-    if (!payload) {
-      localStorage.removeItem(this.tokenKey);
-      localStorage.removeItem(this.usuarioKey);
-      return null;
-    }
-
-    if (payload.exp && payload.exp * 1000 <= Date.now()) {
+    if (!payload || (payload.exp && payload.exp * 1000 <= Date.now())) {
       localStorage.removeItem(this.tokenKey);
       localStorage.removeItem(this.usuarioKey);
       return null;
@@ -198,7 +179,7 @@ export class AuthService {
   private convertirPayloadAUsuario(payload: JwtPayload): UsuarioActual {
     const username = payload.username ?? payload.sub ?? '';
     const role = payload.rol ?? payload.role ??
-      payload.roles?.[0] ?? payload.authorities?.[0] ?? '';
+                 payload.roles?.[0] ?? payload.authorities?.[0] ?? '';
 
     return { username, role };
   }
