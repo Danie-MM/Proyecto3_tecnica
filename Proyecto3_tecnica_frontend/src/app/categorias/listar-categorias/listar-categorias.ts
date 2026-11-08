@@ -1,10 +1,6 @@
-import {
-  Component,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { Categoria } from '../categoria';
@@ -15,21 +11,15 @@ import { CategoriaService } from '../categoria.service';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './listar-categorias.html',
-  styleUrl: './listar-categorias.css',
+  styleUrl: './listar-categorias.css'
 })
-export class ListarCategorias
-  implements OnInit {
-  private readonly categoriaService =
-    inject(CategoriaService);
+export class ListarCategorias implements OnInit {
 
-  protected readonly categorias =
-    signal<Categoria[]>([]);
+  private readonly categoriaService = inject(CategoriaService);
 
-  protected readonly cargando =
-    signal(false);
-
-  protected readonly mensajeError =
-    signal('');
+  protected readonly categorias = signal<Categoria[]>([]);
+  protected readonly cargando = signal(false);
+  protected readonly mensajeError = signal('');
 
   ngOnInit(): void {
     this.cargarCategorias();
@@ -39,59 +29,38 @@ export class ListarCategorias
     this.cargando.set(true);
     this.mensajeError.set('');
 
-    this.categoriaService
-      .obtenerCategorias()
-      .subscribe({
-        next: (categorias) => {
-          this.categorias.set(categorias);
-          this.cargando.set(false);
-        },
-        error: (
-          error: HttpErrorResponse,
-        ) => {
-          console.error(error);
-
-          this.mensajeError.set(
-            'No fue posible cargar las categorías.',
-          );
-
-          this.cargando.set(false);
-        },
-      });
+    this.categoriaService.obtenerCategorias().subscribe({
+      next: categorias => {
+        this.categorias.set(categorias);
+        this.cargando.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al cargar categorías:', error);
+        this.mensajeError.set('No fue posible cargar las categorías.');
+        this.cargando.set(false);
+      }
+    });
   }
 
-  eliminarCategoria(
-    categoria: Categoria,
-  ): void {
+  eliminarCategoria(categoria: Categoria): void {
     const confirmar = window.confirm(
-      `¿Desea eliminar la categoría "${categoria.nombre}"?`,
+      `¿Desea eliminar la categoría "${categoria.nombre}"?`
     );
 
     if (!confirmar) {
       return;
     }
 
-    this.categoriaService
-      .eliminarCategoria(categoria.id)
-      .subscribe({
-        next: () => {
-          this.categorias.update(
-            (categorias) =>
-              categorias.filter(
-                (item) =>
-                  item.id !== categoria.id,
-              ),
-          );
-        },
-        error: (
-          error: HttpErrorResponse,
-        ) => {
-          console.error(error);
-
-          this.mensajeError.set(
-            'No fue posible eliminar la categoría.',
-          );
-        },
-      });
+    this.categoriaService.eliminarCategoria(categoria.id).subscribe({
+      next: () => {
+        this.categorias.update(categorias =>
+          categorias.filter(item => item.id !== categoria.id)
+        );
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al eliminar categoría:', error);
+        this.mensajeError.set('No fue posible eliminar la categoría.');
+      }
+    });
   }
 }
