@@ -1,0 +1,229 @@
+<main class="pagina">
+  <section class="formulario-card">
+    <header>
+      <p class="etiqueta">
+        Administración
+      </p>
+
+      <h1>
+        @if (modoEdicion()) {
+          Editar producto
+        } @else {
+          Registrar producto
+        }
+      </h1>
+
+      <p>
+        @if (modoEdicion()) {
+          Modifique los datos del producto.
+        } @else {
+          Complete los datos del nuevo producto.
+        }
+      </p>
+    </header>
+
+    @if (mensajeError()) {
+      <div
+        class="alerta"
+        role="alert"
+      >
+        {{ mensajeError() }}
+      </div>
+    }
+
+    @if (cargando()) {
+      <p class="estado-carga">
+        Cargando información...
+      </p>
+    } @else {
+      <form
+        [formGroup]="form"
+        (ngSubmit)="guardar()"
+        novalidate
+      >
+        <div class="campo">
+          <label for="nombre">
+            Nombre
+          </label>
+
+          <input
+            id="nombre"
+            type="text"
+            maxlength="150"
+            autocomplete="off"
+            formControlName="nombre"
+          />
+
+          @if (
+            form.controls.nombre.touched &&
+            form.controls.nombre.hasError('required')
+          ) {
+            <small>
+              El nombre es obligatorio.
+            </small>
+          }
+
+          @if (
+            form.controls.nombre.touched &&
+            form.controls.nombre.hasError('maxlength')
+          ) {
+            <small>
+              El nombre no puede superar los 150 caracteres.
+            </small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="descripcion">
+            Descripción
+          </label>
+
+          <textarea
+            id="descripcion"
+            rows="5"
+            maxlength="500"
+            formControlName="descripcion"
+          ></textarea>
+
+          @if (
+            form.controls.descripcion.touched &&
+            form.controls.descripcion.hasError('required')
+          ) {
+            <small>
+              La descripción es obligatoria.
+            </small>
+          }
+
+          @if (
+            form.controls.descripcion.touched &&
+            form.controls.descripcion.hasError('maxlength')
+          ) {
+            <small>
+              La descripción no puede superar los 500 caracteres.
+            </small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="precio">
+            Precio
+          </label>
+
+          <input
+            id="precio"
+            type="number"
+            min="0.01"
+            step="0.01"
+            formControlName="precio"
+          />
+
+          @if (
+            form.controls.precio.touched &&
+            form.controls.precio.hasError('required')
+          ) {
+            <small>
+              El precio es obligatorio.
+            </small>
+          }
+
+          @if (
+            form.controls.precio.touched &&
+            form.controls.precio.hasError('min')
+          ) {
+            <small>
+              El precio debe ser mayor que cero.
+            </small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="cantidadStock">
+            Cantidad en stock
+          </label>
+
+          <input
+            id="cantidadStock"
+            type="number"
+            min="0"
+            step="1"
+            formControlName="cantidadStock"
+          />
+
+          @if (
+            form.controls.cantidadStock.touched &&
+            form.controls.cantidadStock.hasError('required')
+          ) {
+            <small>
+              La cantidad en stock es obligatoria.
+            </small>
+          }
+
+          @if (
+            form.controls.cantidadStock.touched &&
+            form.controls.cantidadStock.hasError('min')
+          ) {
+            <small>
+              La cantidad en stock no puede ser negativa.
+            </small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="categoriaId">
+            Categoría
+          </label>
+
+          <select
+            id="categoriaId"
+            formControlName="categoriaId"
+          >
+            <option [ngValue]="0">
+              Seleccione una categoría
+            </option>
+
+            @for (
+              categoria of categorias();
+              track categoria.id
+            ) {
+              <option [ngValue]="categoria.id">
+                {{ categoria.nombre }}
+              </option>
+            }
+          </select>
+
+          @if (
+            form.controls.categoriaId.touched &&
+            form.controls.categoriaId.invalid
+          ) {
+            <small>
+              Debe seleccionar una categoría.
+            </small>
+          }
+        </div>
+
+        <div class="acciones">
+          <a
+            class="boton boton--secundario"
+            routerLink="/productos"
+          >
+            Cancelar
+          </a>
+
+          <button
+            class="boton boton--primario"
+            type="submit"
+            [disabled]="guardando()"
+          >
+            @if (guardando()) {
+              Guardando...
+            } @else if (modoEdicion()) {
+              Actualizar producto
+            } @else {
+              Guardar producto
+            }
+          </button>
+        </div>
+      </form>
+    }
+  </section>
+</main>
