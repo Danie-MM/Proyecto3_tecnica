@@ -76,20 +76,14 @@ export class Registro {
     };
 
     this.authService.registrarUsuario(request)
-      .pipe(
-        finalize(() => this.cargando.set(false))
-      )
+      .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
-        next: usuario => {
-          console.log('Usuario registrado:', usuario);
-
+        next: () => {
           void this.router.navigate(['/login'], {
             queryParams: { registroExitoso: true }
           });
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Error al registrar usuario:', error);
-
           if (error.status === 409) {
             this.mensajeError.set('Ya existe un usuario con ese nombre.');
             return;
@@ -103,9 +97,7 @@ export class Registro {
           }
 
           if (error.status === 0) {
-            this.mensajeError.set(
-              'No fue posible conectar con el servidor. Verifique que el backend esté encendido.'
-            );
+            this.mensajeError.set('No fue posible conectar con el servidor. Verifique que el backend esté encendido.');
             return;
           }
 
