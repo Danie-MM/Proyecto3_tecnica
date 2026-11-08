@@ -1,11 +1,7 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import {
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
@@ -35,20 +31,8 @@ export class FormularioCategoria implements OnInit {
   protected readonly mensajeError = signal('');
 
   protected readonly form = this.fb.group({
-    nombre: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(100)
-      ]
-    ],
-    descripcion: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(500)
-      ]
-    ]
+    nombre: ['', [Validators.required, Validators.maxLength(100)]],
+    descripcion: ['', [Validators.required, Validators.maxLength(500)]]
   });
 
   ngOnInit(): void {
@@ -79,9 +63,7 @@ export class FormularioCategoria implements OnInit {
     this.mensajeError.set('');
 
     this.categoriaService.obtenerCategoriaPorId(this.categoriaId)
-      .pipe(
-        finalize(() => this.cargando.set(false))
-      )
+      .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
         next: categoria => {
           this.form.patchValue({
@@ -130,9 +112,7 @@ export class FormularioCategoria implements OnInit {
       : this.categoriaService.registrarCategoria(request);
 
     operacion
-      .pipe(
-        finalize(() => this.guardando.set(false))
-      )
+      .pipe(finalize(() => this.guardando.set(false)))
       .subscribe({
         next: () => {
           void this.router.navigate(['/categorias']);
