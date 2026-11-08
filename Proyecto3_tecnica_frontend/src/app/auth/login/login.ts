@@ -15,6 +15,7 @@ import { AuthService } from '../auth.service';
   styleUrl: './login.css'
 })
 export class Login {
+
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -38,9 +39,7 @@ export class Login {
     this.mensajeError.set('');
 
     this.authService.iniciarSesion(this.form.getRawValue())
-      .pipe(
-        finalize(() => this.cargando.set(false))
-      )
+      .pipe(finalize(() => this.cargando.set(false)))
       .subscribe({
         next: () => {
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
@@ -52,17 +51,13 @@ export class Login {
           void this.router.navigateByUrl(rutaDestino);
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Error al iniciar sesión:', error);
-
           if (error.status === 401 || error.status === 403) {
             this.mensajeError.set('El usuario o la contraseña son incorrectos.');
             return;
           }
 
           if (error.status === 0) {
-            this.mensajeError.set(
-              'No fue posible conectar con el servidor. Verifique que el backend esté encendido.'
-            );
+            this.mensajeError.set('No fue posible conectar con el servidor. Verifique que el backend esté encendido.');
             return;
           }
 
